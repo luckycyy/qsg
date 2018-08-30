@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>Document</title>
+</head>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="media/css/jquery.dataTables.css">
+<style type="text/css">
+    .keyboard {
+        width: 13%;
+        height: 25px
+    }
+
+</style>
+
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="media/js/jquery.js"></script>
+
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="media/js/jquery.dataTables.min.js"></script>
+
+<script>
+    var mydata = [
+        {
+            "id": "0001",
+            "name": "张三",
+            "namesx": "zs",
+            "grade": "5",
+            "class": "1",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0002",
+            "name": "李四",
+            "namesx": "ls",
+            "grade": "6",
+            "class": "4",
+            "tel": "1223",
+            "arrive": "true",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0003",
+            "name": "王五",
+            "namesx": "ww",
+            "grade": "4",
+            "class": "3",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0004",
+            "name": "赵六",
+            "namesx": "zl",
+            "grade": "1",
+            "class": "1",
+            "tel": "138",
+            "arrive": "true",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0005",
+            "name": "陈七",
+            "namesx": "cq",
+            "grade": "2",
+            "class": "1",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0006",
+            "name": "李明明",
+            "namesx": "lmm",
+            "grade": "2",
+            "class": "6",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0007",
+            "name": "啊啊啊",
+            "namesx": "aaa",
+            "grade": "2",
+            "class": "6",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0008",
+            "name": "李明明",
+            "namesx": "lmm",
+            "grade": "2",
+            "class": "6",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0009",
+            "name": "小李",
+            "namesx": "xl",
+            "grade": "2",
+            "class": "6",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0010",
+            "name": "张三丰",
+            "namesx": "zsf",
+            "grade": "2",
+            "class": "6",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0011",
+            "name": "谢逊",
+            "namesx": "xx",
+            "grade": "2",
+            "class": "6",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0012",
+            "name": "刘德华",
+            "namesx": "ldh",
+            "grade": "2",
+            "class": "6",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+        {
+            "id": "0013",
+            "name": "范冰冰",
+            "namesx": "fbb",
+            "grade": "2",
+            "class": "6",
+            "tel": "138",
+            "arrive": "false",
+            "arrivetime": "11"
+        },
+    ]
+
+    $(document).ready(function () {
+        $.get("todayList?date=2018-08-28", function (result) {
+            var table = $('#mytable').DataTable({
+                "paging": false,
+                "data": result,
+                "columns": [
+                    {"data": "Namesx"},
+                    {"data": "Id", "width": "33%"},
+                    {"data": "Name", "width": "33%"},
+                    {"data": "Grade", "width": "33%"},
+                    {"data": "Arrive"},
+
+                ],
+                "columnDefs": [
+                    {
+
+                        "render": function (data, type, row) {
+                            console.log(row);
+                            return data + '(' + row.Class + ')班';
+                        },
+                        "targets": 3
+                    },
+                    {
+                        "visible": false,
+                        "targets": [0, 4]
+                    },
+
+                ],
+                "createdRow": function (row, data, dataIndex) {
+                    if (data.Arrive == "true") {
+                        $(row).addClass("selected")
+                    }
+                },
+                "order": [[0, "asc"]]
+            });
+
+
+            var searchWords = ""
+            $('.keyboard').click(function () {
+                var v = $(this).text()
+                searchWords += v
+                table.column(0).search(searchWords).draw();
+                $("[type=search]").val(searchWords)
+            });
+            $('.del').click(function () {
+                searchWords = ""
+                $("[type=search]").val("")
+                table.column(0).search("").draw();
+            });
+            $('.filter').click(function () {
+                if ($(this).text() == "查看未到达") {
+                    searchWords = "";
+                    table.column(0).search("");
+                    table.column(4).search("false").draw();
+                    $(this).text("查看所有")
+                } else if ($(this).text() == "查看所有") {
+                    table.column(0).search("");
+                    table.column(4).search("").draw();
+
+                    $(this).text("查看未到达")
+                }
+
+            });
+
+            $("#mytable tbody").on("click", "tr", function () {
+                $(this).toggleClass("selected")
+            })
+
+
+            $('.save').click(function () {
+                var jsonArr = new Array();　//创建一个数组
+                table.rows('.selected').data().each(function (e) {
+                    jsonArr.push(e)
+                })
+                var jdata = JSON.stringify( jsonArr );
+                $.ajax({
+                    type: "POST",
+                    url: "saveArrive",
+                    contentType: "application/json; charset=utf-8",
+                    data: jdata,
+                    dataType: "json",
+                    success: function (message) {
+                        if (message > 0) {
+                            alert("保存成功");
+                        }
+                    },
+                    error: function (message) {
+                        alert("保存失败！请重试");
+                    }
+                });
+
+            })
+        });
+
+
+    });
+
+
+</script>
+<body>
+
+<div id="keys" style="height:110px;z-index: 9999; position: fixed ! important; right: 0px; top: 0px;background:white;">
+    <button class="keyboard">a</button>
+    <button class="keyboard">b</button>
+    <button class="keyboard">c</button>
+    <button class="keyboard">d</button>
+    <button class="keyboard">e</button>
+    <button class="keyboard">f</button>
+    <button class="keyboard">g</button>
+    <button class="keyboard">h</button>
+    <button class="keyboard">j</button>
+    <button class="keyboard">k</button>
+    <button class="keyboard">l</button>
+    <button class="keyboard">m</button>
+    <button class="keyboard">n</button>
+    <button class="keyboard">o</button>
+    <button class="keyboard">p</button>
+    <button class="keyboard">q</button>
+    <button class="keyboard">r</button>
+    <button class="keyboard">s</button>
+    <button class="keyboard">t</button>
+    <button class="keyboard">w</button>
+    <button class="keyboard">x</button>
+    <button class="keyboard">y</button>
+    <button class="keyboard">z</button>
+    <button class="del">取消搜索</button>
+    <button class="filter">查看未到达</button>
+    <button class="save">保存</button>
+    <hr>
+</div>
+<div style="margin-top: 110px;width:97%; ! important;">
+    <table id="mytable" style="flex:1" class="display">
+        <thead>
+        <tr>
+            <th>namesx</th>
+            <th>序号</th>
+            <th>姓名</th>
+            <th>班级</th>
+            <th>arrive</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
