@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	ns := beego.NewNamespace("/v1",
+	ns := beego.NewNamespace("/static/v1",
 
 		beego.NSNamespace("/callname",
 			beego.NSInclude(
@@ -30,6 +30,7 @@ func init() {
 	)
 	beego.AddNamespace(ns)
 	beego.Router("/static/todayList", &controllers.TodayListController{})
-	beego.Router("/static/saveArrive", &controllers.SaveArriveController{})
+	beego.Router("/static/saveArrivezw", &controllers.SaveArriveZwController{})
+	beego.Router("/static/saveArrivews", &controllers.SaveArriveWsController{})
 	//todo 上面修改
 }

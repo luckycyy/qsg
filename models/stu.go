@@ -16,6 +16,8 @@ type Stu struct {
 	Grade  string `orm:"column(grade);size(255);null"`
 	Class  string `orm:"column(class);size(255);null"`
 	Tel    string `orm:"column(tel);size(255);null"`
+	Count  string `orm:"column(count);size(2);null"`
+	Active string `orm:"column(active);size(2);null"`
 }
 
 func (t *Stu) TableName() string {

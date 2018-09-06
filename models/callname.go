@@ -17,6 +17,7 @@ type Callname struct {
 	Arrive     int       `orm:"column(arrive);null"`
 	ArriveTime time.Time `orm:"column(arrive_time);type(datetime);null"`
 	Date       time.Time `orm:"column(date);type(date);null"`
+	Banci      string    `orm:"column(banci);size(10);null"`
 }
 
 func (t *Callname) TableName() string {

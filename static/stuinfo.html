@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+    <title>Document</title>
+</head>
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="media/css/jquery.dataTables.css">
+<style type="text/css">
+    .keyboard {
+        width: 13%;
+        height: 25px
+    }
+
+</style>
+
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="media/js/jquery.js"></script>
+
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="media/js/jquery.dataTables.min.js"></script>
+
+<script>
+
+
+    $(document).ready(function () {
+
+        $('.refresh').click(function () {
+            location.reload(false)
+        })
+        $('.back').click(function () {
+            history.back();
+        })
+        $.get("v1/stu?limit=-1", function (result) {
+            var table = $('#mytable').DataTable({
+                "paging": false,
+                "data": result,
+                "columns": [
+                    {"data": "Id", "width": "10%"},
+                    {"data": "Name", "width": "20%"},
+                    {"data": "Namesx", "width": "10%"},
+                    {"data": "Grade", "width": "15%"},
+                    {"data": "Class", "width": "10%"},
+                    {"data": "Tel", "width": "35%"},
+
+                ],
+
+
+                "order": [[0, "asc"]]
+            });
+
+
+            var searchWords = ""
+            $('.keyboard').click(function () {
+                var v = $(this).text()
+                searchWords += v
+                table.column(0).search(searchWords).draw();
+                $("[type=search]").val(searchWords)
+            });
+            $('.del').click(function () {
+                searchWords = ""
+                $("[type=search]").val("")
+                table.column(0).search("").draw();
+            });
+
+            $("#mytable tbody").on("click", "tr", function () {
+                $(this).toggleClass("selected")
+            })
+
+
+            $('.save').click(function () {
+                var name = $("#name").val()
+                var namesx = $("#namesx").val()
+                var grade = $("#grade").val()
+                var stuclass = $("#stuclass").val()
+                var tel = $("#tel").val()
+                var count = $("input[name='count']:checked").val();
+                if (name.trim()==""){
+                    alert("请输入姓名")
+                    return
+                }
+                if (namesx.trim()==""){
+                    alert("请输入姓名拼音缩写")
+                    return
+                }
+                if (grade.trim()==""){
+                    alert("请输入年级")
+                    return
+                }
+                if (stuclass.trim()==""){
+                    alert("请输入班级")
+                    return
+                }
+
+                if (isNaN(grade.trim())){
+                    alert("年级请输入数字，不能是中文")
+                    return
+                }
+                if (isNaN(stuclass.trim())){
+                    alert("班级请输入数字，不能是中文")
+                    return
+                }
+                console.log(name)
+                addDataStr={"name":name.trim(),"namesx":namesx.trim(),"grade":grade.trim(),"class":stuclass.trim(),"tel":tel.trim(),"count":count}
+                var addData = JSON.stringify(addDataStr);
+                $.ajax({
+                    type: "POST",
+                    url: "v1/stu",
+                    contentType: "application/json; charset=utf-8",
+                    data: addData,
+                    dataType: "json",
+                    success: function (message) {
+                        alert("添加成功");
+
+                    },
+                    error: function (message) {
+                        alert("添加失败！请重试");
+                    }
+                });
+
+                //table.ajax.reload();
+                //不好使
+            })
+        });
+
+
+    });
+
+
+</script>
+<body>
+
+<div id="keys" style="background-color:white;width:96%;height:160px;z-index: 9999; position: fixed ! important;  top: 0px;background:white;">
+    <span style="width:65%;">
+        姓名 <input id="name" name="name" placeholder="输入姓名(必填)"/><br>
+        缩写 <input id="namesx" name="namesx" placeholder="输入缩写(必填)"/><br>
+        年级 <input  id="grade" name="grade" placeholder="输入年级(必填)"/><br>
+        班级 <input id="stuclass" name="stuclass" placeholder="输入班级(必填)"/><br>
+        电话 <input id="tel" name="tel" placeholder="输入电话(选填)"/><br>
+        接送次数<input name="count" class="count" type="radio" checked="checked" value=1 />仅中午
+        <input name="count" class="count" type="radio" value=3 />仅晚上
+        <input name="count" class="count" type="radio" value=2 />全天
+    </span>
+
+    <button style="width:20%;height:40px;float: right; margin-top: -110px;margin-right: 90px" class="save">添加</button>
+    <button style="width:20%;height:40px;float: right;margin-top: -70px;margin-right: 90px " class="refresh">刷新</button>
+    <button style="width:20%;height:40px;float: right;margin-top: -110px; " class="back">返回首页</button>
+
+</div>
+<div style="margin-top: 160px;width:97%; ! important;">
+    <table id="mytable" style="flex:1" class="display">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>姓名</th>
+            <th>缩写</th>
+            <th>年级</th>
+            <th>班级</th>
+            <th>手机</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
