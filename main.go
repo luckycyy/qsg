@@ -10,7 +10,7 @@ import (
 
 func init() {
 
-	orm.RegisterDataBase("default", "mysql", "root:root@tcp(101.201.71.156:3306)/qiseguang?charset=utf8&loc=Asia%2FShanghai")
+	orm.RegisterDataBase("default", "mysql", "root:root@tcp(127.0.0.1:3306)/qiseguang?charset=utf8&loc=Asia%2FShanghai")
 	orm.Debug = true
 }
 
