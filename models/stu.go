@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego"
 )
 
 type Stu struct {
@@ -18,6 +19,10 @@ type Stu struct {
 	Tel    string `orm:"column(tel);size(255);null"`
 	Count  string `orm:"column(count);size(2);null"`
 	Active string `orm:"column(active);size(2);null"`
+}
+
+type DeleteStusController struct {
+	beego.Controller
 }
 
 func (t *Stu) TableName() string {

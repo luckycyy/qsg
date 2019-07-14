@@ -18,6 +18,7 @@ type SaveArriveZwController struct {
 type SaveArriveWsController struct {
 	beego.Controller
 }
+
 func (c *TodayListController) Get() {
 
 	date:=time.Now().Format("2006-01-02")
@@ -130,3 +131,5 @@ func (c *SaveArriveWsController) Post() {
 	c.ServeJSON()
 
 }
+
+

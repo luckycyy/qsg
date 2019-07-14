@@ -32,5 +32,7 @@ func init() {
 	beego.Router("/static/todayList", &controllers.TodayListController{})
 	beego.Router("/static/saveArrivezw", &controllers.SaveArriveZwController{})
 	beego.Router("/static/saveArrivews", &controllers.SaveArriveWsController{})
-	//todo 上面修改
+	beego.Router("/static/upAll", &controllers.UpAllController{})
+	beego.Router("/static/downAll", &controllers.DownAllController{})
+	beego.Router("/static/deleteStus", &controllers.DeleteStusController{})
 }

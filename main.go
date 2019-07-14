@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-
+	//如果本地调试的话127改为服务器地址
 	orm.RegisterDataBase("default", "mysql", "root:root@tcp(127.0.0.1:3306)/qiseguang?charset=utf8&loc=Asia%2FShanghai")
 	orm.Debug = true
 }

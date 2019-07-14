@@ -8,13 +8,23 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego"
+	"fmt"
+	"github.com/astaxie/beego/orm"
 )
 
 // StuController operations for Stu
 type StuController struct {
 	beego.Controller
 }
-
+type UpAllController struct {
+	beego.Controller
+}
+type DownAllController struct {
+	beego.Controller
+}
+type DeleteStusController struct {
+	beego.Controller
+}
 // URLMapping ...
 func (c *StuController) URLMapping() {
 	c.Mapping("Post", c.Post)
@@ -167,5 +177,57 @@ func (c *StuController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
+}
+
+func (c *UpAllController) Get() {
+	fmt.Println("receive up all grade req")
+	o := orm.NewOrm()
+	res, err := o.Raw("UPDATE stu SET grade=grade+1").Exec()
+	if err == nil {
+		num, _ := res.RowsAffected()
+		fmt.Println("UpAll row affected nums: ", num)
+	}
+	c.Data["json"] = "ok"
+	c.ServeJSON()
+}
+
+func (c *DownAllController) Get() {
+	fmt.Println("receive down all grade req")
+	o := orm.NewOrm()
+	res, err := o.Raw("UPDATE stu SET grade=grade-1").Exec()
+	if err == nil {
+		num, _ := res.RowsAffected()
+		fmt.Println("UpAll row affected nums: ", num)
+	}
+	c.Data["json"] = "ok"
+	c.ServeJSON()
+}
+
+func (c *DeleteStusController) Get() {
+	stusId:=c.GetString("stus")
+	fmt.Println("stusIdStr is:"+stusId)
+	if stusId==""{
+		fmt.Println("get data err")
+		return
+	}
+	stusIdArr := strings.Split(stusId,"-")
+	fmt.Println(len(stusIdArr))
+
+	c.Data["json"] = "OK"
+	for _, stuIdStr := range stusIdArr{
+		fmt.Println(stuIdStr)
+		stuId, err := strconv.Atoi(stuIdStr)
+		if err != nil {
+			fmt.Println("stuId can not convert to int: ", stuId)
+		}
+		if err := models.DeleteStu(stuId); err != nil {
+			fmt.Println("delete stu failed,stuid:"+strconv.Itoa(stuId))
+			c.Data["json"] = err.Error()
+			break
+		}
+		fmt.Println("delete stu success,stuid:"+strconv.Itoa(stuId))
+	}
+
 	c.ServeJSON()
 }

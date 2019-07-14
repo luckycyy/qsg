@@ -123,6 +123,51 @@
                 //table.ajax.reload();
                 //不好使
             })
+
+            $('.delete').click(function () {
+                var jsonArr = new Array();　//创建一个数组
+                table.rows('.selected').data().each(function (e) {
+                    jsonArr.push(e)
+                })
+                var jdata = JSON.stringify( jsonArr );
+                console.log(jdata) 
+                if (jsonArr.length<1){
+                    alert("至少选中一个删除!");
+                }
+                var stuIds = "";
+                var stuCnt = jsonArr.length;
+                var stuNames="";
+                for ( var i = 0; i <jsonArr.length; i++){
+                    stuIds += jsonArr[i].Id;
+                    stuNames += jsonArr[i].Name;
+                    if(i != (jsonArr.length - 1)){
+                        stuIds += "-"; //中划线连接多个要删除的学生ID
+                        stuNames += ",";  //逗号是前端alert显示的分隔符
+                    }
+                } 
+                 console.log(stuIds);
+                $.get("deleteStus?stus="+stuIds, function (result) {
+                    console.log("result:"+result) ;
+                    if(result=='OK'){
+                        alert("删除"+stuCnt+"个成功:"+stuNames);
+                    }else{
+                        alert("删除失败或已删除:"+stuNames);
+                    }
+                });
+            })
+
+            $('.upAll').click(function () {
+               console.log('升级全部');
+                $.get("upAll", function (result) {
+                    alert("所有学生升年级成功")
+                })
+            })
+            $('.downAll').click(function () {
+               console.log('降级全部');
+                $.get("downAll", function (result) {
+                    alert("所有学生降年级成功")
+                })
+            })
         });
 
 
@@ -134,19 +179,22 @@
 
 <div id="keys" style="background-color:white;width:96%;height:160px;z-index: 9999; position: fixed ! important;  top: 0px;background:white;">
     <span style="width:65%;">
-        姓名 <input id="name" name="name" placeholder="输入姓名(必填)"/><br>
-        缩写 <input id="namesx" name="namesx" placeholder="输入缩写(必填)"/><br>
-        年级 <input  id="grade" name="grade" placeholder="输入年级(必填)"/><br>
-        班级 <input id="stuclass" name="stuclass" placeholder="输入班级(必填)"/><br>
-        电话 <input id="tel" name="tel" placeholder="输入电话(选填)"/><br>
+        姓名 <input style="width:40%" id="name" name="name" placeholder="输入姓名(必填)"/><br>
+        缩写 <input style="width:40%" id="namesx" name="namesx" placeholder="输入缩写(必填)"/><br>
+        年级 <input style="width:40%" id="grade" name="grade" placeholder="输入年级(必填)"/><br>
+        班级 <input style="width:40%" id="stuclass" name="stuclass" placeholder="输入班级(必填)"/><br>
+        电话 <input style="width:40%" id="tel" name="tel" placeholder="输入电话(选填)"/><br>
         接送次数<input name="count" class="count" type="radio" checked="checked" value=1 />仅中午
         <input name="count" class="count" type="radio" value=3 />仅晚上
         <input name="count" class="count" type="radio" value=2 />全天
     </span>
-
-    <button style="width:20%;height:40px;float: right; margin-top: -110px;margin-right: 90px" class="save">添加</button>
-    <button style="width:20%;height:40px;float: right;margin-top: -70px;margin-right: 90px " class="refresh">刷新</button>
-    <button style="width:20%;height:40px;float: right;margin-top: -110px; " class="back">返回首页</button>
+   
+    <button style="width:20%;height:30px;float: right; margin-top: -140px;margin-right: 90px" class="save">添加</button>
+    <button style="width:20%;height:30px;float: right;margin-top: -100px;margin-right: 90px " class="refresh">刷新</button>
+    <button style="width:20%;height:30px;float: right;margin-top: -60px;margin-right: 90px " class="upAll">全部升级</button>
+    <button style="width:20%;height:30px;float: right;margin-top: -140px; " class="back">返回首页</button>
+    <button style="width:20%;height:30px;float: right;margin-top: -100px; " class="delete">删除</button>
+    <button style="width:20%;height:30px;float: right;margin-top: -60px; " class="downAll">全部降级</button>
 
 </div>
 <div style="margin-top: 160px;width:97%; ! important;">
